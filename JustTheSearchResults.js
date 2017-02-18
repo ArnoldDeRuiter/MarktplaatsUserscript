@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           Just the search results
-// @version        0.3
+// @version        0.4
 // @namespace      Marktplaats
-// @description    * Removes commercial ads 
+// @description    * Removes commercial ads
 // @description    * Removes a lot of clutter ads, and ads in between the results
 // @description    * Removes paid ads from users
 // @description    * Removes companies/webstores which place ads
@@ -10,13 +10,15 @@
 // @description    * Auto focus on searchbar
 // @description    * Quick focus on searchbar by pressing the "/" key
 // @description    * Contains in-code, easy to modify, seller blacklist functionality
+// @description    * Replacing the indirect clickable "Bekijk meer advertenties" that scrolls you down to the "Bekijk alle advertenties" direct URL, with the actual "Bekijk alle advertenties" direct URL itself.
 // @include        http://www.marktplaats.nl/z.html?*
 // @include        http://www.marktplaats.nl/z/*.html?*
 // @include        http://www.marktplaats.nl/*
 // @include        https://www.marktplaats.nl/*
 // @copyright      2017 Arnold de Ruiter (Arndroid)
 // @license        MIT License
-// @require        http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
+// @require        https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js
+// @require        https://raw.githubusercontent.com/naugtur/insertionQuery/master/insQ.js
 // ==/UserScript==
 
 //Remove paid ads and companies
@@ -39,15 +41,13 @@ $('article.search-result .icon-thumb-down').closest('.search-result').hide();
 //Add auto focus on searchbar, like on Ebay
 $('input#query').focus();
 
-//Remove ads on Marktplaats Home:
-$('div.aanbieding-widget-container').hide();
-
 //Uncluttering Marktplaats:
 $("#footer").hide();
 $(".bottom-listing").hide();
 $("#adsenceContainer").hide();
 $("#adsenceContainerTop").hide();
 $("#bottom-listings-divider").hide();
+$("#banner-viptop").hide();
 
 //Arrow key binding, to easily scroll through the results & quick focus the searchbar with the slash "/" key.
 $("body").keyup(function(event) {
@@ -59,14 +59,25 @@ $("body").keyup(function(event) {
     if (event.which == '39') {
         var href = $('a.pagination-next').attr('href');
         if (href!=null) window.location.href = href;
-        
+
     // previous page
     } else if (event.which == '37') {
         var href = $('a.pagination-previous').attr('href');
         if (href != null) window.location.href = href;
-        
+
     // type '/' to go to the search field
     } else if (event.which == '191' ) {
       $("#input").focus();
     }
+});
+
+//Remove ads on Marktplaats Home:
+insertionQ('#banner-aanbieding').every(function(element){
+    $('#banner-aanbieding').hide();
+});
+
+// Old style "Bekijk alle advertenties" by replacing the annoying "Bekijk meer advertenties" with it.
+insertionQ('#vip-left-soi-link').every(function(element){
+    $('#vip-header-soi-juiceless-link').hide();
+    $('#vip-left-soi-link').appendTo('#vip-seller-all-ads');
 });
