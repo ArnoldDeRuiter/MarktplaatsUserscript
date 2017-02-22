@@ -48,6 +48,10 @@ $("#adsenceContainer").hide();
 $("#adsenceContainerTop").hide();
 $("#bottom-listings-divider").hide();
 $("#banner-viptop").hide();
+$("#banner-top").hide(); // Waisted space at top of results
+$("#banner-bottom").hide(); // Waisted space at bottom of results
+$(".premium-content").hide(); // Blue boxes on ad page
+$(".mp-Listing-banner").hide(); // Messages from MP within search results
 
 //Arrow key binding, to easily scroll through the results & quick focus the searchbar with the slash "/" key.
 $("body").keyup(function(event) {
