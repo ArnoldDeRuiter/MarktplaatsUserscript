@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Just the search results
-// @version        0.4
+// @version        0.5
 // @namespace      Marktplaats
 // @description    * Removes commercial ads
 // @description    * Removes a lot of clutter ads, and ads in between the results
@@ -50,6 +50,7 @@ $("#bottom-listings-divider").hide();
 $("#banner-viptop").hide();
 $("#banner-top").hide(); // Waisted space at top of results
 $("#banner-bottom").hide(); // Waisted space at bottom of results
+$("#top-banner-wrapper").hide(); // Waisted space at top of category page
 $(".premium-content").hide(); // Blue boxes on ad page
 $(".mp-Listing-banner").hide(); // Messages from MP within search results
 
