@@ -14,7 +14,6 @@ Feature list at the moment:
 *  Auto focus on searchbar
 *  Quick focus on searchbar by pressing the "/" key
 *  Contains in-code, easy to modify, seller blacklist functionality
-*  Replacing the indirect clickable "Bekijk meer advertenties" that scrolls you down to the "Bekijk alle advertenties" direct URL, with the actual "Bekijk alle advertenties" direct URL itself.
-
+* Replacing the indirect clickable "Bekijk meer advertenties" functionality, that scrolls you down to the "Bekijk alle advertenties" with directly going to that actual page. (Like it used to be)
 
 Suggestions or ideas are of course most welcome.
