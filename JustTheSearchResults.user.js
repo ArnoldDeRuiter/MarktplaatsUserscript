@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Just the search results
-// @version        0.5
+// @version        0.6
 // @namespace      Marktplaats
 // @description    * Removes commercial ads
 // @description    * Removes a lot of clutter ads, and ads in between the results
@@ -87,6 +87,6 @@ $( "#vip-header-soi-juiceless-link" ).on("click", function(){
 });
 
 //Marktplaats blocks thumbnails when this script is used, or it is a freak bug... but here is a solution:
-$('.listing-image img').each(function(i, obj) {
-    obj.attr("src", obj.data("img-src"));
+$('.listing-image img').each(function() {
+    $(this).attr("src", $(this).data("img-src"));
 });
