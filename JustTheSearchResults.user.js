@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Just the search results
-// @version        0.4
+// @version        0.5
 // @namespace      Marktplaats
 // @description    * Removes commercial ads
 // @description    * Removes a lot of clutter ads, and ads in between the results
@@ -10,7 +10,7 @@
 // @description    * Auto focus on searchbar
 // @description    * Quick focus on searchbar by pressing the "/" key
 // @description    * Contains in-code, easy to modify, seller blacklist functionality
-// @description    * Replacing the indirect clickable "Bekijk meer advertenties" that scrolls you down to the "Bekijk alle advertenties" direct URL, with the actual "Bekijk alle advertenties" direct URL itself.
+// @description    * Replacing the indirect clickable "Bekijk meer advertenties" functionality, that scrolls you down to the "Bekijk alle advertenties" with directly going to that actual page. (Like it used to be)
 // @include        http://www.marktplaats.nl/z.html?*
 // @include        http://www.marktplaats.nl/z/*.html?*
 // @include        http://www.marktplaats.nl/*
@@ -18,7 +18,6 @@
 // @copyright      2017 Arnold de Ruiter (Arndroid)
 // @license        MIT License
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js
-// @require        https://raw.githubusercontent.com/naugtur/insertionQuery/master/insQ.js
 // ==/UserScript==
 
 //Remove paid ads and companies
@@ -50,8 +49,13 @@ $("#bottom-listings-divider").hide();
 $("#banner-viptop").hide();
 $("#banner-top").hide(); // Waisted space at top of results
 $("#banner-bottom").hide(); // Waisted space at bottom of results
+$("#top-banner-wrapper").hide(); // Waisted space at top of category page
 $(".premium-content").hide(); // Blue boxes on ad page
 $(".mp-Listing-banner").hide(); // Messages from MP within search results
+
+//Remove ads on Marktplaats Home:
+$(".main-banners").hide(); //cleaner code, seems to work fine.
+$("#stage").hide();
 
 //Arrow key binding, to easily scroll through the results & quick focus the searchbar with the slash "/" key.
 $("body").keyup(function(event) {
@@ -75,13 +79,14 @@ $("body").keyup(function(event) {
     }
 });
 
-//Remove ads on Marktplaats Home:
-insertionQ('#banner-aanbieding').every(function(element){
-    $('#banner-aanbieding').hide();
+// Re-enable the "Bekijk alle advertenties" functionality, this time with cleaner code.
+$("#vip-header-soi-juiceless-link").text("Bekijk alle advertenties");
+$("#vip-header-soi-juiceless-link").removeClass("do_scroll"); //to avoid the default event
+$( "#vip-header-soi-juiceless-link" ).on("click", function(){
+    $("#vip-left-soi-link a").trigger("click");
 });
 
-// Old style "Bekijk alle advertenties" by replacing the annoying "Bekijk meer advertenties" with it.
-insertionQ('#vip-left-soi-link').every(function(element){
-    $('#vip-header-soi-juiceless-link').hide();
-    $('#vip-left-soi-link').appendTo('#vip-seller-all-ads');
+//Marktplaats blocks thumbnails when this script is used, or it is a freak bug... but here is a solution:
+$('.listing-image img').each(function(i, obj) {
+    obj.attr("src", obj.data("img-src"));
 });
