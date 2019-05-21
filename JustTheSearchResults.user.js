@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Just the search results
-// @version        0.6
+// @version        0.7b
 // @namespace      Marktplaats
 // @description    * Removes commercial ads
 // @description    * Removes a lot of clutter ads, and ads in between the results
@@ -21,21 +21,21 @@
 // ==/UserScript==
 
 //Remove paid ads and companies
-$('article.search-result').filter(":contains(Bezorgt in)").hide();
-$('article.search-result').filter(":contains(Topadvertentie)").hide();
-$('article.search-result').filter(":contains(Dagtopper)").hide();
-$('article.search-result').filter(":contains(Heel Nederland)").hide();
-$('article.search-result').filter(":contains(Bezoek website)").hide();
+$('.mp-Listing--list-item').filter(":contains(Bezorgt in)").hide();
+$('.mp-Listing--list-item').filter(":contains(Topadvertentie)").hide();
+$('.mp-Listing--list-item').filter(":contains(Dagtopper)").hide();
+$('.mp-Listing--list-item').filter(":contains(Heel Nederland)").hide();
+$('.mp-Listing--list-item').filter(":contains(Bezoek website)").hide();
 
 //Seller blacklist:
-$('article.search-result').filter(":contains(Example Name 123)").hide();
+$('.mp-Listing--list-item').filter(":contains(Example Name 123)").hide();
 
 //Removing the "Meer advertenties van deze verkoper" clutter/ad bar in the search results:
 $('.listing-extension').hide();
 
 //Thumbs system filter:
-$('article.search-result .icon-thumb-up').closest('.search-result').hide();
-$('article.search-result .icon-thumb-down').closest('.search-result').hide();
+$('.mp-Listing--list-item .icon-thumb-up').closest('.search-result').hide();
+$('.mp-Listing--list-item .icon-thumb-down').closest('.search-result').hide();
 
 //Add auto focus on searchbar, like on Ebay
 $('input#query').focus();
@@ -65,13 +65,15 @@ $("body").keyup(function(event) {
 
     // next page with results
     if (event.which == '39') {
-        var href = $('a.pagination-next').attr('href');
-        if (href!=null) window.location.href = href;
+        //var href = $('a.mp-Button--round .mp-svg-arrow-right-white').attr('href');
+        //if (href!=null) window.location.href = href;
+        $('a.mp-Button--round .mp-svg-arrow-left-white').click();
 
     // previous page
     } else if (event.which == '37') {
-        var href = $('a.pagination-previous').attr('href');
-        if (href != null) window.location.href = href;
+        //var href = $('a.mp-Button--round .mp-svg-arrow-left-white').attr('href');
+        //if (href != null) window.location.href = href;
+        $('a.mp-Button--round .mp-svg-arrow-left-white').click();
 
     // type '/' to go to the search field
     } else if (event.which == '191' ) {
