@@ -1,94 +1,110 @@
 // ==UserScript==
-// @name           Just the search results
-// @version        0.7b
+// @name           Marktplaats; enkel de zoekresultaten.
+// @version        1.0
 // @namespace      Marktplaats
-// @description    * Removes commercial ads
-// @description    * Removes a lot of clutter ads, and ads in between the results
-// @description    * Removes paid ads from users
-// @description    * Removes companies/webstores which place ads
-// @description    * Quick scroll through result pages by pressing the left and right arrow keys
-// @description    * Auto focus on searchbar
-// @description    * Quick focus on searchbar by pressing the "/" key
-// @description    * Contains in-code, easy to modify, seller blacklist functionality
-// @description    * Replacing the indirect clickable "Bekijk meer advertenties" functionality, that scrolls you down to the "Bekijk alle advertenties" with directly going to that actual page. (Like it used to be)
+// @description    * Verbergt bedrijf/webshop advertenties
+// @description    * Verbergt betaalde advertenties
+// @description    * Schoont pagina's op door verbergen van nutteloze onderdelen
+// @description    * Voegt een link toe naar de locatie van de adverteerder
+// @description    * Navigeer gemakkelijker doormiddel van sneltoetsen
+// @description    * eBay style zoekveld focus op Home
+// @description    * In-code mogelijkheid om gemakkelijk een blacklist samen te stellen
 // @include        http://www.marktplaats.nl/z.html?*
 // @include        http://www.marktplaats.nl/z/*.html?*
 // @include        http://www.marktplaats.nl/*
 // @include        https://www.marktplaats.nl/*
-// @copyright      2017 Arnold de Ruiter (Arndroid)
+// @copyright      2019 Arnold de Ruiter (Arndroid)
 // @license        MIT License
-// @require        https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js
+// @require        https://code.jquery.com/jquery-3.4.1.min.js
+// @require        https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @grant    GM_addStyle
 // ==/UserScript==
+/*- The @grant directive is needed for GreaseMonkey users.
+    A work around for a design change introduced in GM 1.0. It restores the sandbox.
+*/
 
-//Remove paid ads and companies
-$('.mp-Listing--list-item').filter(":contains(Bezorgt in)").hide();
-$('.mp-Listing--list-item').filter(":contains(Topadvertentie)").hide();
-$('.mp-Listing--list-item').filter(":contains(Dagtopper)").hide();
-$('.mp-Listing--list-item').filter(":contains(Heel Nederland)").hide();
-$('.mp-Listing--list-item').filter(":contains(Bezoek website)").hide();
+function alterHome() {
+        // Laat op Home de checkbox "Zoek in titel en beschrijving" zien als optie.
+        $("mp-header.x-scope.mp-header-0.u-stickyHeader").addClass("expandSearchBar mp-Header--expandSearchBar");
 
-//Seller blacklist:
-$('.mp-Listing--list-item').filter(":contains(Example Name 123)").hide();
+        // Automatische focus op de zoekblak, zoals eBay dit heeft
+        $('.mp-SearchForm-query #input').focus();
 
-//Removing the "Meer advertenties van deze verkoper" clutter/ad bar in the search results:
-$('.listing-extension').hide();
+        // Welkom popup verbergen
+        $(".mp-LoginNudge").hide();
+}
+waitForKeyElements("mp-header.x-scope.mp-header-0.u-stickyHeader", alterHome);
 
-//Thumbs system filter:
-$('.mp-Listing--list-item .icon-thumb-up').closest('.search-result').hide();
-$('.mp-Listing--list-item .icon-thumb-down').closest('.search-result').hide();
+function alterElsewhere() {
+    // Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
+    $('header.u-stickyHeader').attr("data-expanded","true");
+    $("div.mp-Header.mp-text-paragraph.mp-cloak").addClass("mp-Header--expandSearchBar");
 
-//Add auto focus on searchbar, like on Ebay
-$('input#query').focus();
+    // Welkom popup verbergen
+    $(".mp-LoginNudge").hide();
+}
+waitForKeyElements("header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak", alterElsewhere);
 
-//Uncluttering Marktplaats:
-$("#footer").hide();
-$(".bottom-listing").hide();
-$("#adsenceContainer").hide();
-$("#adsenceContainerTop").hide();
-$("#bottom-listings-divider").hide();
-$("#banner-viptop").hide();
-$("#banner-top").hide(); // Waisted space at top of results
-$("#banner-bottom").hide(); // Waisted space at bottom of results
-$("#top-banner-wrapper").hide(); // Waisted space at top of category page
-$(".premium-content").hide(); // Blue boxes on ad page
-$(".mp-Listing-banner").hide(); // Messages from MP within search results
+function alterSearchResults() {
+    // Verberg betaalde advertenties en bedrijven
+    $('.mp-Listing--list-item').filter(":contains(Bezorgt in)").hide();
+    $('.mp-Listing--list-item').filter(":contains(Topadvertentie)").hide();
+    $('.mp-Listing--list-item').filter(":contains(Dagtopper)").hide();
+    $('.mp-Listing--list-item').filter(":contains(Heel Nederland)").hide();
+    $('.mp-Listing--list-item').filter(":contains(Bezoek website)").hide();
 
-//Remove ads on Marktplaats Home:
-$(".main-banners").hide(); //cleaner code, seems to work fine.
-$("#stage").hide();
+    // Nutteloze "Deze adverteerder heeft meer advertenties" elementen verbergen
+    $(".mp-Listing--other-seller").hide();
 
-//Arrow key binding, to easily scroll through the results & quick focus the searchbar with the slash "/" key.
-$("body").keyup(function(event) {
-    // leave the keys alone while typing text
-    if ($(event.target).is('input, textarea'))
-        return;
+    // Adverteerders blokkeren
+    $('.mp-Listing--list-item').filter(":contains(Example Name 123)").hide();
 
-    // next page with results
-    if (event.which == '39') {
-        //var href = $('a.mp-Button--round .mp-svg-arrow-right-white').attr('href');
-        //if (href!=null) window.location.href = href;
-        $('a.mp-Button--round .mp-svg-arrow-left-white').click();
+    // Geef het zoekveld voorrang op functie toetsen hierna
+    $('.mp-SearchForm-query #input').on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            $("button.mp-SearchForm-search").click();
+        }
+    });
 
-    // previous page
-    } else if (event.which == '37') {
-        //var href = $('a.mp-Button--round .mp-svg-arrow-left-white').attr('href');
-        //if (href != null) window.location.href = href;
-        $('a.mp-Button--round .mp-svg-arrow-left-white').click();
+    // Functies binden aan toetsen; volgende, vorige, zoekveld focus.
+    $("body").keyup(function(event) {
+        // Negeer wanneer er een veld in gebruik is
+        if ($(event.target).is('input, textarea'))
+            return;
 
-    // type '/' to go to the search field
-    } else if (event.which == '191' ) {
-      $("#input").focus();
-    }
-});
+        // Naar de volgende pagina, met de rechter pijltoets
+        if (event.which == '39') {
+            $('a.mp-Button--round .mp-svg-arrow-right-white').click();
 
-// Re-enable the "Bekijk alle advertenties" functionality, this time with cleaner code.
-$("#vip-header-soi-juiceless-link").text("Bekijk alle advertenties");
-$("#vip-header-soi-juiceless-link").removeClass("do_scroll"); //to avoid the default event
-$( "#vip-header-soi-juiceless-link" ).on("click", function(){
-    $("#vip-left-soi-link a").trigger("click");
-});
+        // Naar de vorige pagina, met de linker pijltoets
+        } else if (event.which == '37') {
+            $('a.mp-Button--round .mp-svg-arrow-left-white').click();
 
-//Marktplaats blocks thumbnails when this script is used, or it is a freak bug... but here is a solution:
-$('.listing-image img').each(function() {
-    $(this).attr("src", $(this).data("img-src"));
-});
+        // Focus en selecteer direct het zoekveld door op '\' te drukken (want '/' is in gebruik door Firefox)
+        } else if (event.which == '220' ) {
+            $('.mp-SearchForm-query #input').select();
+        }
+    });
+}
+waitForKeyElements(".mp-Listing--list-item", alterSearchResults);
+
+function addMaps() {
+    // Maak locatie klikbaar, met OpenStreetMaps
+    var osmUrl = "https://www.openstreetmap.org/search?query="+$("#vip-seller-location span.name").text();
+    $("#vip-seller-location .heading span").replaceWith('<a target="_blank" href="'+osmUrl+'">'+$("#vip-seller-location span.name").text()+'</a>');
+}
+waitForKeyElements("#vip-seller-location .heading span", addMaps);
+
+function hideDetailCluter() {
+    // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
+    $(".cas-other-items").hide();
+    $(".banner-viptop").hide();
+}
+waitForKeyElements(".cas-other-items", hideDetailCluter);
+
+function hideResultCluter() {
+    // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
+    $(".mp-Banner").hide();
+    $(".mp-Listings__admarktTitle").hide()
+}
+waitForKeyElements(".mp-Banner", hideResultCluter);
