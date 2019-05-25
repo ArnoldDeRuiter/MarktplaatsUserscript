@@ -1,19 +1,20 @@
-#Marktplaats - Just the search results.
+# Marktplaats - Enkel de zoek resultaten
+
 Marktplaats Userscript
 
-Marktplaats has made it a pain to find the real people who are selling stuff you are looking for, sometimes elimitating entire result pages from actual selling users, filling the results with users who pay for their ads, resellers and companies or webshops.
-This userscript brings an end to that, and also unclutters the webpages. Also binding keyboard keys to quickly preform certain actions.
+Marktplaats heeft het opgegeven moment wat lastig gemaakt om werkelijke advertenties te vinden, tussen alle bedrijven, webshops en betaalde advertenties. :thumbsdown:
 
-Feature list at the moment:
+Dit Userscript maakt hier een einde aan en zorgt voor een overzichterlijke, gemakkelijke en betere gebruikers ervaring. :v:
 
-*  Removes commercial ads 
-*  Removes a lot of clutter ads, and ads in between the results
-*  Removes paid ads from users
-*  Removes companies/webstores which place ads
-*  Quick scroll through result pages by pressing the left and right arrow keys
-*  Auto focus on searchbar
-*  Quick focus on searchbar by pressing the "/" key
-*  Contains in-code, easy to modify, seller blacklist functionality
-* Replacing the indirect clickable "Bekijk meer advertenties" functionality, that scrolls you down to the "Bekijk alle advertenties" with directly going to that actual page. (Like it used to be)
+Functionaliteit op het moment:
 
-Suggestions or ideas are of course most welcome.
+
+* Verbergt bedrijf/webshop advertenties
+* Verbergt betaalde advertenties
+* Schoont pagina's op door verbergen van nutteloze onderdelen
+* Voegt een link toe naar de locatie van de adverteerder
+* Navigeer gemakkelijker doormiddel van sneltoetsen
+* eBay style zoekveld focus op Home
+* In-code mogelijkheid om gemakkelijk een blacklist samen te stellen
+
+Suggesties, ideeën en PR's zijn natuurlijk altijd welkom! :octocat:
