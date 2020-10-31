@@ -19,6 +19,7 @@
 // @require        https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant    GM_addStyle
 // ==/UserScript==
+/* globals jQuery, $, waitForKeyElements */
 /*- The @grant directive is needed for GreaseMonkey users.
     A work around for a design change introduced in GM 1.0. It restores the sandbox.
 */
@@ -69,8 +70,9 @@ function alterSearchResults() {
     // Functies binden aan toetsen; volgende, vorige, zoekveld focus.
     $("body").keyup(function(event) {
         // Negeer wanneer er een veld in gebruik is
-        if ($(event.target).is('input, textarea'))
+        if ($(event.target).is('input, textarea')) {
             return;
+        }
 
         // Naar de volgende pagina, met de rechter pijltoets
         if (event.which == '39') {
