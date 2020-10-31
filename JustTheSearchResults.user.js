@@ -102,6 +102,9 @@ function alterSearchResults() {
             $('.mp-SearchForm-query #input').select();
         }
     });
+
+    // Verberg adsense na alles
+    $(".adsense-container").hide();
 }
 waitForKeyElements(".mp-Listing--list-item", alterSearchResults);
 
@@ -122,6 +125,6 @@ waitForKeyElements(".cas-other-items", hideDetailCluter);
 function hideResultCluter() {
     // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
     $(".mp-Banner").hide();
-    $(".mp-Listings__admarktTitle").hide()
+    $(".mp-Listings__admarktTitle").parent('div').hide();
 }
-waitForKeyElements(".mp-Banner", hideResultCluter);
+waitForKeyElements(".mp-Listings__admarktTitle", hideResultCluter);
