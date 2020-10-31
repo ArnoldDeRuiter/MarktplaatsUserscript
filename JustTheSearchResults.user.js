@@ -16,7 +16,7 @@
 // @copyright      2020 Arnold de Ruiter (Arndroid)
 // @license        MIT License
 // @require        https://code.jquery.com/jquery-3.5.1.slim.min.js
-// @require        https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
+// @require        https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant          GM_addStyle
 // ==/UserScript==
 /* globals jQuery, $, waitForKeyElements */
@@ -86,28 +86,15 @@ function alterSearchResults() {
         }
     });
 
-    // Functies binden aan toetsen; volgende, vorige, zoekveld focus.
-    $("body").keyup(function(event) {
-        // Negeer wanneer er een veld in gebruik is
-        if ($(event.target).is('input, textarea')) {
-            return;
-        }
-
-        // Naar de volgende pagina, met de rechter pijltoets
-        if (event.which == '39') {
-            $('a.mp-Button--round .mp-svg-arrow-right-white').click();
-
-        // Naar de vorige pagina, met de linker pijltoets
-        } else if (event.which == '37') {
-            $('a.mp-Button--round .mp-svg-arrow-left-white').click();
-
-        // Focus en selecteer direct het zoekveld door op '\' te drukken (want '/' is in gebruik door Firefox)
-        } else if (event.which == '220' ) {
-            $('.mp-SearchForm-query #input').select();
-        }
-    });
+    setUnsetListingThumbnails();
 }
 waitForKeyElements(".mp-Listing--list-item", alterSearchResults);
+
+function setUnsetListingThumbnails() {
+    $( ".mp-Listing-image-item img" ).each(function() {
+        $( this ).attr('src',$( this ).data('src'));
+    });
+}
 
 function addMaps() {
     // Maak locatie klikbaar, met OpenStreetMaps
@@ -130,3 +117,26 @@ function hideResultCluter() {
     $("#adsense-container").hide();
 }
 waitForKeyElements(".mp-Listings__admarktTitle", hideResultCluter);
+
+
+function buttonEvents() {
+// Functies binden aan toetsen; volgende, vorige, zoekveld focus.
+    $("body").keyup(function(event) {
+        // Negeer wanneer er een veld in gebruik is
+        if ($(event.target).is('input, textarea')) {
+            return;
+        }
+
+        // Naar de volgende pagina, met de rechter pijltoets
+        if (event.which == '39') {
+            $(".mp-PaginationControls-pagination a:nth-of-type(2)").click();
+        // Naar de vorige pagina, met de linker pijltoets
+        } else if (event.which == '37') {
+            $(".mp-PaginationControls-pagination a:nth-of-type(1)").click();
+        // Focus en selecteer direct het zoekveld door op '\' te drukken (want '/' is in gebruik door Firefox)
+        } else if (event.which == '220' ) {
+            $('.mp-SearchForm-query #input').select();
+        }
+    });
+}
+waitForKeyElements(".mp-PaginationControls-pagination a:nth-of-type(2)", buttonEvents);
