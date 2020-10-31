@@ -37,10 +37,17 @@ function preventLoginNudge() {
     localStorage.SeenLoginGate = true;
     var dt = new Date();
     date = dt.getDate();
+    var minutes = dt.getMinutes();
+    minutes = minutes > 9 ? minutes : '0' + minutes;
+    var seconds = dt.getSeconds();
+    seconds = seconds > 9 ? seconds : '0' + seconds;
+    var ms = dt.getMilliseconds();
+    ms = ms > 99 ? ms : ms > 9 ? '0' + ms : '00' + ms;
     dt.setMonth(dt.getMonth() + 1, 1);
     dt.setHours(dt.getHours() -1, 1);
     var date = dt.getFullYear() + "-" + dt.getMonth() + "-" + date + "T";
-    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds() + "." + dt.getMilliseconds() + "Z";
+    var time = dt.getHours() + ":" + minutes + ":" + seconds + "." + dt.getMilliseconds() + "Z";
+    console.log(date+time);
     localStorage.MpLoginNudgeDismissDate = '["'+date+time+'"]';
 }
 if (localStorage.getItem("SeenLoginGate") === null) {
