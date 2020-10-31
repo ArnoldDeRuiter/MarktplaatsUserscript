@@ -46,12 +46,16 @@ function preventLoginNudge() {
     dt.setMonth(dt.getMonth() + 1, 1);
     dt.setHours(dt.getHours() -1, 1);
     var date = dt.getFullYear() + "-" + dt.getMonth() + "-" + date + "T";
-    var time = dt.getHours() + ":" + minutes + ":" + seconds + "." + dt.getMilliseconds() + "Z";
-    console.log(date+time);
-    localStorage.MpLoginNudgeDismissDate = '["'+date+time+'"]';
+    var timeOne = dt.getHours() + ":" + minutes + ":" + seconds + "." + ms + "Z";
+    var timeTwo = dt.getHours() + ":" + minutes + ":" + (seconds+11) + "." + ms + "Z";
+    console.log('["'+date+timeOne+'","'+date+timeTwo+'"]');
+    localStorage.MpLoginNudgeDismissDate = '["'+date+timeOne+'","'+date+timeTwo+'"]';
 }
-if (localStorage.getItem("SeenLoginGate") === null) {
-    preventLoginNudge();
+// Unless MpLoginSuccess cookie is set (Logged in)
+if (!document.cookie.match(/^(.*;)?\s*MpLoginSuccess\s*=\s*[^;]+(.*)?$/)) {
+    if (localStorage.getItem("SeenLoginGate") === null) {
+        preventLoginNudge();
+    }
 }
 
 function alterElsewhere() {
