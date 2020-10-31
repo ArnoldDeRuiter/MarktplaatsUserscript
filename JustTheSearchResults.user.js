@@ -25,24 +25,32 @@
 */
 
 function alterHome() {
-        // Laat op Home de checkbox "Zoek in titel en beschrijving" zien als optie.
-        $("mp-header.x-scope.mp-header-0.u-stickyHeader").addClass("expandSearchBar mp-Header--expandSearchBar");
+    // Laat op Home de checkbox "Zoek in titel en beschrijving" zien als optie.
+    $("mp-header.x-scope.mp-header-0.u-stickyHeader").addClass("expandSearchBar mp-Header--expandSearchBar");
 
-        // Automatische focus op de zoekblak, zoals eBay dit heeft
-        $('.mp-SearchForm-query #input').focus();
-
-        // Welkom popup verbergen
-        $(".mp-LoginNudge").hide();
+    // Automatische focus op de zoekblak, zoals eBay dit heeft
+    $('.mp-SearchForm-query #input').focus();
 }
 waitForKeyElements("mp-header.x-scope.mp-header-0.u-stickyHeader", alterHome);
+
+function preventLoginNudge() {
+    localStorage.SeenLoginGate = true;
+    var dt = new Date();
+    date = dt.getDate();
+    dt.setMonth(dt.getMonth() + 1, 1);
+    dt.setHours(dt.getHours() -1, 1);
+    var date = dt.getFullYear() + "-" + dt.getMonth() + "-" + date + "T";
+    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds() + "." + dt.getMilliseconds() + "Z";
+    localStorage.MpLoginNudgeDismissDate = '["'+date+time+'"]';
+}
+if (localStorage.getItem("SeenLoginGate") === null) {
+    preventLoginNudge();
+}
 
 function alterElsewhere() {
     // Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
     $('header.u-stickyHeader').attr("data-expanded","true");
     $("div.mp-Header.mp-text-paragraph.mp-cloak").addClass("mp-Header--expandSearchBar");
-
-    // Welkom popup verbergen
-    $(".mp-LoginNudge").hide();
 }
 waitForKeyElements("header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak", alterElsewhere);
 
