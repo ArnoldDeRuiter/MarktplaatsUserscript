@@ -25,48 +25,25 @@
 */
 
 function alterHome () {
-  // Laat op Home de checkbox "Zoek in titel en beschrijving" zien als optie.
-  $('mp-header.x-scope.mp-header-0.u-stickyHeader').addClass('expandSearchBar mp-Header--expandSearchBar')
-
-  // Automatische focus op de zoekblak, zoals eBay dit heeft
-  $('.mp-SearchForm-query #input').focus()
+// Toon altijd de zoek filters, niet pas wanneer je op het zoekveld zelf klikt
+  $('.mp-SearchFieldset-advanced').css('max-height', 'unset')
 }
-waitForKeyElements('mp-header.x-scope.mp-header-0.u-stickyHeader', alterHome)
+waitForKeyElements('.u-stickyHeader', alterHome)
 
 function preventLoginNudge () {
-  localStorage.SeenLoginGate = true
-  const dt = new Date()
-  date = dt.getDate()
-  let minutes = dt.getMinutes()
-  minutes = minutes > 9 ? minutes : '0' + minutes
-  let seconds = dt.getSeconds()
-  seconds = seconds > 9 ? seconds : '0' + seconds
-  let ms = dt.getMilliseconds()
-  ms = ms > 99 ? ms : ms > 9 ? '0' + ms : '00' + ms
-  dt.setMonth(dt.getMonth() + 1, 1)
-  dt.setHours(dt.getHours() - 1, 1)
-  var date = dt.getFullYear() + '-' + dt.getMonth() + '-' + date + 'T'
-  const timeOne = dt.getHours() + ':' + minutes + ':' + seconds + '.' + ms + 'Z'
-  const timeTwo = dt.getHours() + ':' + minutes + ':' + (seconds + 11) + '.' + ms + 'Z'
-  console.log('["' + date + timeOne + '","' + date + timeTwo + '"]')
-  localStorage.MpLoginNudgeDismissDate = '["' + date + timeOne + '","' + date + timeTwo + '"]'
+  $('#login-nudge-root').remove()
 }
-// Unless MpLoginSuccess cookie is set (Logged in)
-if (!document.cookie.match(/^(.*;)?\s*MpLoginSuccess\s*=\s*[^;]+(.*)?$/)) {
-  if (localStorage.getItem('SeenLoginGate') === null) {
-    preventLoginNudge()
-  }
-}
+waitForKeyElements('#login-nudge-root', preventLoginNudge)
 
 function alterElsewhere () {
-  // Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
+// Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
   $('header.u-stickyHeader').attr('data-expanded', 'true')
   $('div.mp-Header.mp-text-paragraph.mp-cloak').addClass('mp-Header--expandSearchBar')
 }
 waitForKeyElements('header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak', alterElsewhere)
 
 function alterSearchResults () {
-  // Verberg betaalde advertenties en bedrijven
+// Verberg betaalde advertenties en bedrijven
   $('.mp-Listing--list-item').filter(':contains(Bezorgt in)').hide()
   $('.mp-Listing--list-item').filter(':contains(Topadvertentie)').hide()
   $('.mp-Listing--list-item').filter(':contains(Dagtopper)').hide()
@@ -79,13 +56,6 @@ function alterSearchResults () {
   // Adverteerders blokkeren
   $('.mp-Listing--list-item').filter(':contains(Example Name 123)').hide()
 
-  // Geef het zoekveld voorrang op functie toetsen hierna
-  $('.mp-SearchForm-query #input').on('keyup', function (e) {
-    if (e.keyCode == 13) {
-      $('button.mp-SearchForm-search').click()
-    }
-  })
-
   setUnsetListingThumbnails()
 }
 waitForKeyElements('.mp-Listing--list-item', alterSearchResults)
@@ -97,21 +67,21 @@ function setUnsetListingThumbnails () {
 }
 
 function addMaps () {
-  // Maak locatie klikbaar, met OpenStreetMaps
+// Maak locatie klikbaar, met OpenStreetMaps
   const osmUrl = 'https://www.openstreetmap.org/search?query=' + $('#vip-seller-location span.name').text()
   $('#vip-seller-location .heading span').replaceWith('<a target="_blank" href="' + osmUrl + '">' + $('#vip-seller-location span.name').text() + '</a>')
 }
 waitForKeyElements('#vip-seller-location .heading span', addMaps)
 
 function hideDetailCluter () {
-  // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
+// Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
   $('.cas-other-items').hide()
   $('.banner-viptop').hide()
 }
 waitForKeyElements('.cas-other-items', hideDetailCluter)
 
 function hideResultCluter () {
-  // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
+// Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
   $('.mp-Banner').hide()
   $('.mp-Listings__admarktTitle').parent('div').hide()
   $('#adsense-container').hide()
@@ -119,23 +89,15 @@ function hideResultCluter () {
 waitForKeyElements('.mp-Listings__admarktTitle', hideResultCluter)
 
 function buttonEvents () {
-  // Functies binden aan toetsen; volgende, vorige, zoekveld focus.
+// Functies binden aan toetsen; volgende, vorige, zoekveld focus.
   $('body').keyup(function (event) {
-    // Negeer wanneer er een veld in gebruik is
-    if ($(event.target).is('input, textarea')) {
-      return
-    }
-
-    // Naar de volgende pagina, met de rechter pijltoets
-    if (event.which == '39') {
-      $('.mp-PaginationControls-pagination a:nth-of-type(2)').click()
-      // Naar de vorige pagina, met de linker pijltoets
-    } else if (event.which == '37') {
-      $('.mp-PaginationControls-pagination a:nth-of-type(1)').click()
-      // Focus en selecteer direct het zoekveld door op '\' te drukken (want '/' is in gebruik door Firefox)
-    } else if (event.which == '220') {
-      $('.mp-SearchForm-query #input').select()
+  // Naar de volgende pagina, met de rechter pijltoets
+    if (event.which === 39) {
+      $('.mp-PaginationControls-pagination .mp-Button').last()[0].click()
+    // Naar de vorige pagina, met de linker pijltoets
+    } else if (event.which === 37) {
+      $('.mp-PaginationControls-pagination .mp-Button').first()[0].click()
     }
   })
 }
-waitForKeyElements('.mp-PaginationControls-pagination a:nth-of-type(2)', buttonEvents)
+waitForKeyElements('.mp-PaginationControls-pagination .mp-Button', buttonEvents)
