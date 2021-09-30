@@ -101,3 +101,14 @@ function buttonEvents () {
   })
 }
 waitForKeyElements('.mp-PaginationControls-pagination .mp-Button', buttonEvents)
+
+function addGlobalStyle (css) {
+  let head, style
+  head = document.getElementsByTagName('head')[0]
+  if (!head) { return }
+  style = document.createElement('style')
+  style.type = 'text/css'
+  style.innerHTML = css
+  head.appendChild(style)
+}
+addGlobalStyle('.ellipsis { white-space: normal; }')
