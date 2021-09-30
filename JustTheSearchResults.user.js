@@ -13,9 +13,10 @@
 // @include        http://www.marktplaats.nl/z/*.html?*
 // @include        http://www.marktplaats.nl/*
 // @include        https://www.marktplaats.nl/*
-// @copyright      2020 Arnold de Ruiter (Arndroid)
+// @copyright      2021 Arnold de Ruiter
 // @license        MIT License
 // @require        https://code.jquery.com/jquery-3.5.1.slim.min.js
+// @require        https://cdn.jsdelivr.net/npm/consent-string@1.5.2/dist/index.min.js
 // @require        https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant          GM_addStyle
 // ==/UserScript==
@@ -23,6 +24,17 @@
 /*- The @grant directive is needed for GreaseMonkey users.
     A work around for a design change introduced in GM 1.0. It restores the sandbox.
 */
+
+
+const consentData = new ConsentString();
+
+// const consentData = new ConsentString('BOQ7WlgOQ7WlgABABwAAABJOACgACAAQABA');
+// const consentData2 = new ConsentString('BOQ7WlgOQ7WlgABABwAAABJOACgACAAQABA');
+// alert(consentData);
+// alert(consentData2);
+
+// `consentData` contains the decoded consent information
+
 
 function alterHome() {
     // Laat op Home de checkbox "Zoek in titel en beschrijving" zien als optie.
@@ -140,3 +152,15 @@ function buttonEvents() {
     });
 }
 waitForKeyElements(".mp-PaginationControls-pagination a:nth-of-type(2)", buttonEvents);
+
+function addGlobalStyle(css) {
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+}
+
+addGlobalStyle('.ellipsis { white-space: normal; }');

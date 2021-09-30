@@ -1,0 +1,2 @@
+{"main":"index.js","dependencies":{"consent-string":"^1.5.2","lodash":"^4.17.21"},"devDependencies":{"webpack":"^5.55.1","webpack-cli":"^4.8.0"},"scripts":{"build":"webpack"}}
+
