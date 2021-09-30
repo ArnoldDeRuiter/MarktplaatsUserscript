@@ -9,6 +9,7 @@
 // @description    * Navigeer gemakkelijker doormiddel van sneltoetsen
 // @description    * eBay style zoekveld focus op Home
 // @description    * In-code mogelijkheid om gemakkelijk een blacklist samen te stellen
+// @description    * Toont volledige gebruikersnamen in overzicht van biedingen
 // @include        http://www.marktplaats.nl/z.html?*
 // @include        http://www.marktplaats.nl/z/*.html?*
 // @include        http://www.marktplaats.nl/*
