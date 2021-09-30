@@ -67,12 +67,17 @@ function setUnsetListingThumbnails () {
   })
 }
 
-function addMaps () {
-// Maak locatie klikbaar, met OpenStreetMaps
+
+function improveSellerAdPage () {
+  // Maak locatie klikbaar, met OpenStreetMaps
   const osmUrl = 'https://www.openstreetmap.org/search?query=' + $('#vip-seller-location span.name').text()
   $('#vip-seller-location .heading span').replaceWith('<a target="_blank" href="' + osmUrl + '">' + $('#vip-seller-location span.name').text() + '</a>')
+
+  // Vervang nutteloze 'Meer advertenties' scroll knop, met de daadwerkelijke directe link naar de advertenties van de verkoper
+  jQuery('#seller-own-ads.vip-soi.mp-Card.mp-Card--rounded a.juiceless-link').clone().appendTo('#vip-seller-all-ads')
+  jQuery('#vip-header-soi-juiceless-link').remove()
 }
-waitForKeyElements('#vip-seller-location .heading span', addMaps)
+waitForKeyElements('#vip-seller-location .heading span', improveSellerAdPage)
 
 function hideDetailCluter () {
 // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
