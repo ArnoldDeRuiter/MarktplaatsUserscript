@@ -35,7 +35,7 @@ waitForKeyElements('mp-header.x-scope.mp-header-0.u-stickyHeader', alterHome)
 
 function preventLoginNudge () {
   localStorage.SeenLoginGate = true
-  let dt = new Date()
+  const dt = new Date()
   date = dt.getDate()
   let minutes = dt.getMinutes()
   minutes = minutes > 9 ? minutes : '0' + minutes
@@ -46,8 +46,8 @@ function preventLoginNudge () {
   dt.setMonth(dt.getMonth() + 1, 1)
   dt.setHours(dt.getHours() - 1, 1)
   var date = dt.getFullYear() + '-' + dt.getMonth() + '-' + date + 'T'
-  let timeOne = dt.getHours() + ':' + minutes + ':' + seconds + '.' + ms + 'Z'
-  let timeTwo = dt.getHours() + ':' + minutes + ':' + (seconds + 11) + '.' + ms + 'Z'
+  const timeOne = dt.getHours() + ':' + minutes + ':' + seconds + '.' + ms + 'Z'
+  const timeTwo = dt.getHours() + ':' + minutes + ':' + (seconds + 11) + '.' + ms + 'Z'
   console.log('["' + date + timeOne + '","' + date + timeTwo + '"]')
   localStorage.MpLoginNudgeDismissDate = '["' + date + timeOne + '","' + date + timeTwo + '"]'
 }
