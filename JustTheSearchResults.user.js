@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Marktplaats; enkel de zoekresultaten.
-// @version        1.3
+// @version        1.4
 // @namespace      Marktplaats
 // @description    * Verbergt bedrijf/webshop advertenties
 // @description    * Verbergt betaalde advertenties
@@ -13,10 +13,10 @@
 // @include        http://www.marktplaats.nl/z/*.html?*
 // @include        http://www.marktplaats.nl/*
 // @include        https://www.marktplaats.nl/*
-// @copyright      2020 Arnold de Ruiter (Arndroid)
+// @copyright      2021 Arnold de Ruiter
 // @license        MIT License
 // @require        https://code.jquery.com/jquery-3.5.1.slim.min.js
-// @require        https://gist.github.com/raw/2625891/waitForKeyElements.js
+// @require        https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
 // @grant          GM_addStyle
 // ==/UserScript==
 /* globals jQuery, $, waitForKeyElements */
@@ -120,7 +120,7 @@ waitForKeyElements(".mp-Listings__admarktTitle", hideResultCluter);
 
 
 function buttonEvents() {
-// Functies binden aan toetsen; volgende, vorige, zoekveld focus.
+    // Functies binden aan toetsen; volgende, vorige, zoekveld focus.
     $("body").keyup(function(event) {
         // Negeer wanneer er een veld in gebruik is
         if ($(event.target).is('input, textarea')) {
@@ -130,10 +130,10 @@ function buttonEvents() {
         // Naar de volgende pagina, met de rechter pijltoets
         if (event.which == '39') {
             $(".mp-PaginationControls-pagination a:nth-of-type(2)").click();
-        // Naar de vorige pagina, met de linker pijltoets
+            // Naar de vorige pagina, met de linker pijltoets
         } else if (event.which == '37') {
             $(".mp-PaginationControls-pagination a:nth-of-type(1)").click();
-        // Focus en selecteer direct het zoekveld door op '\' te drukken (want '/' is in gebruik door Firefox)
+            // Focus en selecteer direct het zoekveld door op '\' te drukken (want '/' is in gebruik door Firefox)
         } else if (event.which == '220' ) {
             $('.mp-SearchForm-query #input').select();
         }
