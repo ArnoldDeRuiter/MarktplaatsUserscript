@@ -26,7 +26,7 @@
 */
 
 function alterHome () {
-// Toon altijd de zoek filters, niet pas wanneer je op het zoekveld zelf klikt
+  // Toon altijd de zoek filters, niet pas wanneer je op het zoekveld zelf klikt
   $('.mp-SearchFieldset-advanced').css('max-height', 'unset')
 }
 waitForKeyElements('.u-stickyHeader', alterHome)
@@ -37,25 +37,44 @@ function preventLoginNudge () {
 waitForKeyElements('#login-nudge-root', preventLoginNudge)
 
 function alterElsewhere () {
-// Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
+  // Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
   $('header.u-stickyHeader').attr('data-expanded', 'true')
   $('div.mp-Header.mp-text-paragraph.mp-cloak').addClass('mp-Header--expandSearchBar')
 }
 waitForKeyElements('header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak', alterElsewhere)
 
 function alterSearchResults () {
-// Verberg betaalde advertenties en bedrijven
+  // Verberg betaalde advertenties en bedrijven
   $('.mp-Listing--list-item').filter(':contains(Bezorgt in)').hide()
   $('.mp-Listing--list-item').filter(':contains(Topadvertentie)').hide()
   $('.mp-Listing--list-item').filter(':contains(Dagtopper)').hide()
   $('.mp-Listing--list-item').filter(':contains(Heel Nederland)').hide()
   $('.mp-Listing--list-item').filter(':contains(Bezoek website)').hide()
 
+  // In plaats van gewoon "Nieuwe voorraad" te controleren en verbergen, verberg de verkoper hiermee op de huidige pagina
+  const badSellersWithStock = $('.mp-Listing-Opvalsticker-wrapper').parents('.mp-Listing--list-item').find('.mp-Listing-seller-name')
+  badSellersWithStock.each(function (i, el) {
+    $('.mp-Listing--list-item').filter(':contains(' + el.textContent + ')').hide()
+  })
+
+  // In plaats van gewoon een advertentie met sub afbeeldingen te controleren en verbergen, verberg de verkoper hiermee op de huidige pagina
+  const badSellersWithSubImages = $('.mp-Listing-sub-images').parents('.mp-Listing--list-item').find('.mp-Listing-seller-name')
+  badSellersWithSubImages.each(function (i, el) {
+    $('.mp-Listing--list-item').filter(':contains(' + el.textContent + ')').hide()
+  })
+
   // Nutteloze "Deze adverteerder heeft meer advertenties" elementen verbergen
   $('.mp-Listing--other-seller').hide()
 
   // Adverteerders blokkeren
   $('.mp-Listing--list-item').filter(':contains(Example Name 123)').hide()
+
+  // Clean up overview
+  $('.mp-Listing .mp-Attribute--micro-tip').parent().append($('.mp-Listing .mp-Attribute--micro-tip'))
+  $('.mp-Listing .mp-Attribute--micro-tip').addClass('mp-Attribute--default')
+  $('.mp-Listing .mp-Attribute--micro-tip').removeClass('mp-Attribute--micro-tip')
+  addGlobalStyle('.mp-Listing .mp-Attribute--micro-tip { padding: 0; background: none }')
+  addGlobalStyle('.mp-Listing--list-item .mp-Listing-group--price-date-feature { max-width: 25% }')
 
   setUnsetListingThumbnails()
 }
@@ -67,27 +86,27 @@ function setUnsetListingThumbnails () {
   })
 }
 
-
 function improveSellerAdPage () {
   // Maak locatie klikbaar, met OpenStreetMaps
   const osmUrl = 'https://www.openstreetmap.org/search?query=' + $('#vip-seller-location span.name').text()
   $('#vip-seller-location .heading span').replaceWith('<a target="_blank" href="' + osmUrl + '">' + $('#vip-seller-location span.name').text() + '</a>')
 
-  // Vervang nutteloze 'Meer advertenties' scroll knop, met de daadwerkelijke directe link naar de advertenties van de verkoper
-  jQuery('#seller-own-ads.vip-soi.mp-Card.mp-Card--rounded a.juiceless-link').clone().appendTo('#vip-seller-all-ads')
-  jQuery('#vip-header-soi-juiceless-link').remove()
+  // Vervang nutteloze 'Meer advertenties' scroll knop, met de daadwerkelijke directe link naar de advertenties va
+  const sellerProfile = $('.top-info a').attr('href')
+  $('#vip-seller-all-ads').append('<a href="' + sellerProfile + '">Bekijk alle advertenties</a>')
+  $('.do_scroll').remove()
 }
 waitForKeyElements('#vip-seller-location .heading span', improveSellerAdPage)
 
 function hideDetailCluter () {
-// Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
+  // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
   $('.cas-other-items').hide()
   $('.banner-viptop').hide()
 }
 waitForKeyElements('.cas-other-items', hideDetailCluter)
 
 function hideResultCluter () {
-// Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
+  // Opschonen van pagina, waar een ad blocker ruimtes achterlaat.
   $('.mp-Banner').hide()
   $('.mp-Listings__admarktTitle').parent('div').hide()
   $('#adsense-container').hide()
@@ -95,18 +114,23 @@ function hideResultCluter () {
 waitForKeyElements('.mp-Listings__admarktTitle', hideResultCluter)
 
 function buttonEvents () {
-// Functies binden aan toetsen; volgende, vorige, zoekveld focus.
+  // Functies binden aan toetsen; volgende, vorige, zoekveld focus.
   $('body').keyup(function (event) {
-  // Naar de volgende pagina, met de rechter pijltoets
+    // Naar de volgende pagina, met de rechter pijltoets
     if (event.which === 39) {
       $('.mp-PaginationControls-pagination .mp-Button').last()[0].click()
-    // Naar de vorige pagina, met de linker pijltoets
+      // Naar de vorige pagina, met de linker pijltoets
     } else if (event.which === 37) {
       $('.mp-PaginationControls-pagination .mp-Button').first()[0].click()
     }
   })
 }
 waitForKeyElements('.mp-PaginationControls-pagination .mp-Button', buttonEvents)
+
+function hideAds () {
+  $('.mp-Listings--gallery-view').parent('.mp-Listings-bottomBlockGallery').hide()
+}
+waitForKeyElements('.mp-Listings--gallery-view', hideAds)
 
 function addGlobalStyle (css) {
   let head, style
@@ -118,3 +142,4 @@ function addGlobalStyle (css) {
   head.appendChild(style)
 }
 addGlobalStyle('.ellipsis { white-space: normal; }')
+addGlobalStyle('.mp-Banner.mp-Banner--fluid { display: none }')
