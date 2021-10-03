@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Marktplaats; enkel de zoekresultaten.
-// @version        1.4
+// @version        1.4.1
 // @namespace      Marktplaats
 // @description    * Verbergt bedrijf/webshop advertenties
 // @description    * Verbergt betaalde advertenties
