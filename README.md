@@ -14,7 +14,7 @@ Functionaliteit op het moment:
 * Schoont pagina's op door verbergen van nutteloze onderdelen
 * Voegt een link toe naar de locatie van de adverteerder
 * Navigeer gemakkelijker doormiddel van sneltoetsen
-* eBay style zoekveld focus op Home
 * In-code mogelijkheid om gemakkelijk een blacklist samen te stellen
+* Indien op een overzicht pagina van een verkoper wordt er standaard gezocht binnen dat overzicht
 
 Suggesties, ideeën en PR's zijn natuurlijk altijd welkom! :octocat:
