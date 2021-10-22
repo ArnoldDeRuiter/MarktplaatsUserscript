@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Marktplaats; enkel de zoekresultaten.
-// @version        1.4.1
+// @version        1.4.2
 // @namespace      Marktplaats
 // @description    * Verbergt bedrijf/webshop advertenties
 // @description    * Verbergt betaalde advertenties
@@ -36,12 +36,12 @@ function preventLoginNudge () {
 }
 waitForKeyElements('#login-nudge-root', preventLoginNudge)
 
-function alterElsewhere () {
-  // Laat elders de checkbox "Zoek in titel en beschrijving" zien als optie.
+function alterSearchbar () {
+  // Laat de checkbox "Zoek in titel en beschrijving" zien als optie.
   $('header.u-stickyHeader').attr('data-expanded', 'true')
   $('div.mp-Header.mp-text-paragraph.mp-cloak').addClass('mp-Header--expandSearchBar')
 }
-waitForKeyElements('header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak', alterElsewhere)
+waitForKeyElements('header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak', alterSearchbar)
 
 function alterSearchResults () {
   // Verberg betaalde advertenties en bedrijven
@@ -78,7 +78,7 @@ function alterSearchResults () {
 
   setUnsetListingThumbnails()
 }
-waitForKeyElements('.mp-Listing--list-item', alterSearchResults)
+waitForKeyElements('.mp-Listing--list-item', alterSearchResults, false)
 
 function setUnsetListingThumbnails () {
   $('.mp-Listing-image-item img').each(function () {
