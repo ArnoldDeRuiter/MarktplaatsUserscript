@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Marktplaats; enkel de zoekresultaten.
-// @version        1.4.2
+// @version        1.4.3
 // @namespace      Marktplaats
 // @description    * Verbergt bedrijf/webshop advertenties
 // @description    * Verbergt betaalde advertenties
@@ -42,6 +42,12 @@ function alterSearchbar () {
   $('div.mp-Header.mp-text-paragraph.mp-cloak').addClass('mp-Header--expandSearchBar')
 }
 waitForKeyElements('header.u-stickyHeader div.mp-Header.mp-text-paragraph.mp-cloak', alterSearchbar)
+
+function alterSellerOverviewSearch () {
+  // When searching on a seller's overview page (Meer advertenties), automatically select 'Van deze verkoper' when using the searchbar
+  $('input[name*=\'searchOnPage\']').prop('checked', true)
+}
+waitForKeyElements('input[name*=\'searchOnPage\']', alterSellerOverviewSearch, true)
 
 function alterSearchResults () {
   // Verberg betaalde advertenties en bedrijven
