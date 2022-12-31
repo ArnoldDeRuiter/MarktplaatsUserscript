@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Marktplaats; enkel de zoekresultaten.
-// @version        1.5.0
+// @version        1.5.1
 // @namespace      Marktplaats
 // @description    * Verbergt bedrijf/webshop advertenties
 // @description    * Verbergt betaalde advertenties
@@ -16,7 +16,6 @@
 // @license        MIT License
 // @require        https://code.jquery.com/jquery-3.6.2.slim.min.js
 // @require        https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
-// @grant          GM_addStyle
 // ==/UserScript==
 /* globals jQuery, $, waitForKeyElements */
 /* - The @grant directive is needed for GreaseMonkey users.
