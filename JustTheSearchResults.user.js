@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Marktplaats; enkel de zoekresultaten
-// @version      2.0.0
+// @version      2.0.1
 // @namespace    Marktplaats
 // @description  - Verbergt bedrijf/webshop advertenties.
 // @description  - Verbergt betaalde advertenties.
@@ -42,23 +42,41 @@
             if (shouldHide) item.style.display = 'none';
         });
 
-        document.querySelectorAll('[class*="Listing--other-seller"]').forEach(el => {
-            el.style.display = 'none';
-        });
+        const hideElements = ['Listing--other-seller', 'PopularSearchesBlock-root'];
+        document.querySelectorAll(hideElements.map(p => `[class*="${p}"]`).join(', ')).forEach(el => el.style.display = 'none');
     };
 
     const enhanceLocationLink = () => {
-        const icon = document.querySelector('[class*="SvgIconLocation"]');
-        const span = icon?.closest('div')?.querySelector('span');
-        if (!span || !span.textContent.trim()) return;
+        const locationName = document.querySelector(
+            '[class*="SellerLocationSection-locationText"] [class*="SellerLocationSection-locationName"], [class*="SellerLocationSection-locationText"] .hz-Text--bodyLargeStrong'
+        );
+        if (!locationName || locationName.tagName === 'A') return;
 
-        const locationText = span.textContent.trim();
-        const link = document.createElement('a');
-        link.href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(locationText)}`;
-        link.target = '_blank';
-        link.textContent = locationText;
-        span.replaceWith(link);
+        const text = locationName.textContent.trim();
+        const a = document.createElement('a');
+        a.href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(text)}`;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = locationName.className || '';
+        a.textContent = text;
+
+        locationName.replaceWith(a);
     };
+
+    const enhanceLocationEmbed = () => {
+        const mapContainer = document.querySelector('[class*="Map-root"]');
+        if (!mapContainer) return;
+        if (mapContainer.querySelector('iframe')) return;
+
+        const locationName = document.querySelector(
+            '[class*="SellerLocationSection-locationText"] [class*="SellerLocationSection-locationName"], [class*="SellerLocationSection-locationText"] .hz-Text--bodyLargeStrong'
+        );
+        const text = locationName.textContent.trim();
+
+         embedOSMByName(text, '[class*="Map-root"]', { width: '400', height: '200' })
+             .catch(err => console.error('embed failed:', err));
+    };
+
 
     const setupKeyboardShortcuts = () => {
         document.body.addEventListener('keydown', (e) => {
@@ -159,6 +177,7 @@
     const contentObserver = new MutationObserver(() => {
         hideAds();
         enhanceLocationLink();
+        enhanceLocationEmbed();
         loadThumbnails();
     });
 
@@ -170,8 +189,64 @@
     // Initial run
     hideAds();
     enhanceLocationLink();
+    enhanceLocationEmbed();
     loadThumbnails();
     setupKeyboardShortcuts();
     addCustomStyles();
     observeImageZoom();
 })();
+
+function embedOSMByName(name, containerSelector, opts) {
+  opts = opts || {};
+  var width = opts.width || '600';
+  var height = opts.height || '450';
+  var layer = encodeURIComponent(opts.layer || 'mapnik');
+  var zoomFallback = opts.zoom || 12;
+
+  var q = encodeURIComponent(name);
+  var url = 'https://nominatim.openstreetmap.org/search?q=' + q + '&format=json&limit=1';
+
+  return fetch(url, {
+    headers: { 'Accept': 'application/json' /* Browsers set User-Agent; consider server-side proxy for heavy use */ }
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('Nominatim request failed: ' + res.status);
+    return res.json();
+  })
+  .then(function(results) {
+    if (!results || results.length === 0) throw new Error('Place not found: ' + name);
+    var r = results[0];
+    var lat = parseFloat(r.lat);
+    var lon = parseFloat(r.lon);
+
+    var bboxStr;
+    if (r.boundingbox && r.boundingbox.length === 4) {
+      // Nominatim boundingbox: [south, north, west, east]
+      var south = parseFloat(r.boundingbox[0]);
+      var north = parseFloat(r.boundingbox[1]);
+      var west  = parseFloat(r.boundingbox[2]);
+      var east  = parseFloat(r.boundingbox[3]);
+      bboxStr = [west, south, east, north].map(encodeURIComponent).join('%2C');
+    } else {
+      var delta = 0.05 * Math.pow(2, (12 - zoomFallback));
+      bboxStr = [lon - delta, lat - delta, lon + delta, lat + delta].map(encodeURIComponent).join('%2C');
+    }
+
+    var marker = encodeURIComponent(lat + ',' + lon);
+    var embedUrl = 'https://www.openstreetmap.org/export/embed.html?bbox=' + bboxStr + '&layer=' + layer + '&marker=' + marker;
+
+    var container = document.querySelector(containerSelector);
+    if (!container) throw new Error('Container not found: ' + containerSelector);
+
+    container.innerHTML = '';
+    var iframe = document.createElement('iframe');
+    iframe.width = width;
+    iframe.height = height;
+    iframe.frameBorder = '0';
+    iframe.style.border = '1px solid black';
+    iframe.src = embedUrl;
+    container.appendChild(iframe);
+
+    return { iframe: iframe, embedUrl: embedUrl, nominatim: r };
+  });
+}
